@@ -45,9 +45,6 @@ app.use('/api/cases', caseRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// ===== 404 handler =====
-app.use((req, res) => res.status(404).json({ error: 'Not found' }));
-
 // ===== Serve frontend pages =====
 const publicDir = path.join(__dirname, '..', 'public');
 app.use(express.static(publicDir));
@@ -59,5 +56,8 @@ app.get('/', (req, res) => {
 app.get('/doctor', (req, res) => {
   res.sendFile(path.join(publicDir, 'doctor.html'));
 });
+
+// ===== 404 handler (MUST BE LAST) =====
+app.use((req, res) => res.status(404).json({ error: 'Not found' }));
 
 export default app;
