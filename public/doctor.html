@@ -1,0 +1,1770 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Pro Aligner - Doctor Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a74da;
+            --primary-dark: #085bb0;
+            --primary-light: #e3f2fd;
+            --secondary: #2d9cdb;
+            --accent: #56ccf2;
+            --light: #f8f9fa;
+            --dark: #333333;
+            --gray: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --border-radius: 12px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .login-logo img {
+            height: 60px;
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(10, 116, 218, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-light);
+        }
+
+        /* Doctor Portal Styles */
+        #doctor-portal {
+            display: none;
+        }
+
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            height: 45px;
+        }
+
+        .logo span {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .logout-btn {
+            color: var(--gray);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            color: var(--danger);
+        }
+
+        .dashboard {
+            display: flex;
+            margin-top: 75px;
+            min-height: calc(100vh - 75px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            padding: 20px 0;
+            position: fixed;
+            height: calc(100vh - 75px);
+            overflow-y: auto;
+            transition: var(--transition);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--dark);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-right: 3px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .menu-badge {
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            margin-left: auto;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            transition: var(--transition);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .stat-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+        .form-section-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .form-section-title i {
+            margin-right: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .file-upload i {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .file-upload p {
+            margin-bottom: 15px;
+            color: var(--gray);
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .file-action {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-action:hover {
+            color: var(--danger);
+        }
+
+        .cases-table {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .table-filters {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-in-review {
+            background: #cce7ff;
+            color: #004085;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-right: 5px;
+        }
+
+        .action-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* Advanced Features */
+        .progress-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9ecef;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .step-active .step-number {
+            background: var(--primary);
+            color: white;
+        }
+
+        .step-complete .step-number {
+            background: var(--success);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-align: center;
+        }
+
+        .step-active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 1;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: var(--transition);
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .case-preview {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .preview-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .preview-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .preview-item {
+            margin-bottom: 10px;
+        }
+
+        .preview-label {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .preview-value {
+            margin-top: 5px;
+        }
+
+        .file-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .preview-file {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preview-file img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-file .file-icon {
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar-menu span {
+                display: none;
+            }
+            
+            .sidebar-menu i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .progress-indicator {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .progress-step {
+                flex-direction: row;
+                gap: 15px;
+            }
+            
+            .progress-line {
+                display: none;
+            }
+            
+            .preview-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="login-section" class="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <img src="https://i.imgur.com/WppkIEp.png" alt="Clear Pro Aligner">
+            </div>
+            <h2 class="login-title">Doctor Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                    <label>
+                        <input type="checkbox" id="remember-me"> Remember me
+                    </label>
+                    <a href="#" style="color: var(--primary); text-decoration: none;">Forgot Password?</a>
+                </div>
+                <div id="login-error" class="form-group" style="color: var(--danger); display: none;"></div>
+                <button type="submit" class="btn" style="width: 100%;">Login</button>
+            </form>
+            <p style="text-align: center; margin-top: 20px; color: var(--gray);">
+                Demo: admin@clearproaligner.com / admin123
+            </p>
+        </div>
+    </div>
+
+    <!-- Doctor Portal (shown after login) -->
+    <div id="doctor-portal" style="display: none;">
+        <!-- Header -->
+        <header>
+            <nav>
+                <div class="logo">
+                    <img src="https://i.imgur.com/WppkIEp.png" alt="Clear Pro Aligner">
+                    <span>Doctor Portal</span>
+                </div>
+                
+                <div class="user-info">
+                    <div class="user-avatar" id="doctor-avatar">DR</div>
+                    <div class="user-details">
+                        <div class="user-name" id="doctor-name">Dr. Sarah Johnson</div>
+                        <div class="user-role">Dental Surgeon</div>
+                    </div>
+                    <a href="#" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+                    <li><a href="#"><i class="fas fa-plus-circle"></i> <span>New Case</span> <span class="menu-badge">New</span></a></li>
+                    <li><a href="#"><i class="fas fa-folder-open"></i> <span>My Cases</span> <span class="menu-badge">12</span></a></li>
+                    <li><a href="#"><i class="fas fa-calendar-alt"></i> <span>Appointments</span> <span class="menu-badge">3</span></a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> <span>Patients</span></a></li>
+                    <li><a href="#"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                    <li><a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="page-header">
+                    <h1 class="page-title">Submit New Case</h1>
+                    <div>
+                        <a href="#" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Cases</a>
+                    </div>
+                </div>
+
+                <!-- Progress Indicator -->
+                <div class="progress-indicator">
+                    <div class="progress-line"><div class="progress-fill" id="progress-fill"></div></div>
+                    <div class="progress-step step-active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Patient Info</div>
+                    </div>
+                    <div class="progress-step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Case Details</div>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Files Upload</div>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Review & Submit</div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-cases">0</h3>
+                            <p>Total Cases</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pending-cases">0</h3>
+                            <p>Pending Review</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="approved-cases">0</h3>
+                            <p>Approved Cases</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>4.8</h3>
+                            <p>Average Rating</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case Submission Form -->
+                <div class="form-container">
+                    <form id="caseForm">
+                        <!-- Step 1: Patient Information -->
+                        <div class="form-step active" id="step-1">
+                            <div class="form-section">
+                                <h2 class="form-section-title"><i class="fas fa-user-injured"></i> Patient Information</h2>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Patient ID</label>
+                                        <input type="text" class="form-control" value="AUTO-GENERATED" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Full Name *</label>
+                                        <input type="text" id="patientName" class="form-control" placeholder="Enter patient's full name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Date of Birth *</label>
+                                        <input type="date" id="dateOfBirth" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Gender *</label>
+                                        <select id="gender" class="form-control" required>
+                                            <option value="">Select gender</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" id="patientEmail" class="form-control" placeholder="patient@example.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Phone</label>
+                                        <input type="tel" id="patientPhone" class="form-control" placeholder="(123) 456-7890">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-navigation">
+                                <div></div> <!-- Empty div for spacing -->
+                                <button type="button" class="btn next-step" data-next="2">Next <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Case Details -->
+                        <div class="form-step" id="step-2">
+                            <div class="form-section">
+                                <h2 class="form-section-title"><i class="fas fa-teeth"></i> Case Details</h2>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Case Type *</label>
+                                        <select id="caseType" class="form-control" required>
+                                            <option value="">Select case type</option>
+                                            <option value="crowding">Crowding</option>
+                                            <option value="spacing">Spacing</option>
+                                            <option value="overbite">Overbite</option>
+                                            <option value="underbite">Underbite</option>
+                                            <option value="crossbite">Crossbite</option>
+                                            <option value="openbite">Open Bite</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Treatment Complexity *</label>
+                                        <select id="complexity" class="form-control" required>
+                                            <option value="">Select complexity</option>
+                                            <option value="simple">Simple</option>
+                                            <option value="moderate">Moderate</option>
+                                            <option value="complex">Complex</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Estimated Treatment Duration (months) *</label>
+                                        <input type="number" id="treatmentDuration" class="form-control" min="3" max="24" placeholder="e.g., 12" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Previous Orthodontic Treatment</label>
+                                        <select id="previousTreatment" class="form-control">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Case Notes</label>
+                                    <textarea id="notes" class="form-control" placeholder="Additional details about the case..." rows="4"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-navigation">
+                                <button type="button" class="btn btn-secondary prev-step" data-prev="1"><i class="fas fa-arrow-left"></i> Previous</button>
+                                <button type="button" class="btn next-step" data-next="3">Next <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: File Uploads -->
+                        <div class="form-step" id="step-3">
+                            <div class="form-section">
+                                <h2 class="form-section-title"><i class="fas fa-file-upload"></i> File Uploads</h2>
+                                
+                                <!-- STL Files -->
+                                <div class="form-group">
+                                    <label class="form-label">3D Scan Files (STL) *</label>
+                                    <div class="file-upload" id="stlUpload">
+                                        <i class="fas fa-file-archive"></i>
+                                        <p>Drag & drop your STL files here or click to browse</p>
+                                        <p class="btn btn-secondary">Select Files</p>
+                                        <input type="file" id="stlInput" multiple accept=".stl" style="display: none;">
+                                    </div>
+                                    <div class="file-list" id="stlFileList"></div>
+                                </div>
+
+                                <!-- Patient Photos -->
+                                <div class="form-group">
+                                    <label class="form-label">Patient Photos *</label>
+                                    <div class="file-upload" id="photoUpload">
+                                        <i class="fas fa-images"></i>
+                                        <p>Drag & drop patient photos here or click to browse</p>
+                                        <p class="btn btn-secondary">Select Photos</p>
+                                        <input type="file" id="photoInput" multiple accept="image/*" style="display: none;">
+                                    </div>
+                                    <div class="file-list" id="photoFileList"></div>
+                                </div>
+
+                                <!-- X-Rays -->
+                                <div class="form-group">
+                                    <label class="form-label">X-Ray Images</label>
+                                    <div class="file-upload" id="xrayUpload">
+                                        <i class="fas fa-x-ray"></i>
+                                        <p>Drag & drop X-ray images here or click to browse</p>
+                                        <p class="btn btn-secondary">Select X-Rays</p>
+                                        <input type="file" id="xrayInput" multiple accept="image/*" style="display: none;">
+                                    </div>
+                                    <div class="file-list" id="xrayFileList"></div>
+                                </div>
+                            </div>
+                            <div class="form-navigation">
+                                <button type="button" class="btn btn-secondary prev-step" data-prev="2"><i class="fas fa-arrow-left"></i> Previous</button>
+                                <button type="button" class="btn next-step" data-next="4">Next <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Review & Submit -->
+                        <div class="form-step" id="step-4">
+                            <div class="form-section">
+                                <h2 class="form-section-title"><i class="fas fa-check-circle"></i> Review & Submit</h2>
+                                <p>Please review all information before submitting your case. You can go back to previous steps to make changes if needed.</p>
+                                
+                                <div class="case-preview" id="casePreview">
+                                    <div class="preview-title">Case Preview</div>
+                                    <div class="preview-content">
+                                        <div class="preview-item">
+                                            <div class="preview-label">Patient Name</div>
+                                            <div class="preview-value" id="preview-patientName"></div>
+                                        </div>
+                                        <div class="preview-item">
+                                            <div class="preview-label">Date of Birth</div>
+                                            <div class="preview-value" id="preview-dateOfBirth"></div>
+                                        </div>
+                                        <div class="preview-item">
+                                            <div class="preview-label">Gender</div>
+                                            <div class="preview-value" id="preview-gender"></div>
+                                        </div>
+                                        <div class="preview-item">
+                                            <div class="preview-label">Case Type</div>
+                                            <div class="preview-value" id="preview-caseType"></div>
+                                        </div>
+                                        <div class="preview-item">
+                                            <div class="preview-label">Complexity</div>
+                                            <div class="preview-value" id="preview-complexity"></div>
+                                        </div>
+                                        <div class="preview-item">
+                                            <div class="preview-label">Treatment Duration</div>
+                                            <div class="preview-value" id="preview-treatmentDuration"></div>
+                                        </div>
+                                        <div class="preview-item">
+                                            <div class="preview-label">Previous Treatment</div>
+                                            <div class="preview-value" id="preview-previousTreatment"></div>
+                                        </div>
+                                        <div class="preview-item" style="grid-column: 1 / -1;">
+                                            <div class="preview-label">Case Notes</div>
+                                            <div class="preview-value" id="preview-notes"></div>
+                                        </div>
+                                        <div class="preview-item" style="grid-column: 1 / -1;">
+                                            <div class="preview-label">Uploaded Files</div>
+                                            <div class="file-preview" id="filePreview"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-navigation">
+                                <button type="button" class="btn btn-secondary prev-step" data-prev="3"><i class="fas fa-arrow-left"></i> Previous</button>
+                                <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Submit Case</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Recent Cases -->
+                <div class="cases-table">
+                    <div class="table-header">
+                        <div class="table-title">Recent Cases</div>
+                        <div class="table-filters">
+                            <select class="filter-select">
+                                <option>All Status</option>
+                                <option>Pending</option>
+                                <option>In Review</option>
+                                <option>Approved</option>
+                            </select>
+                            <select class="filter-select">
+                                <option>Last 30 Days</option>
+                                <option>Last 90 Days</option>
+                                <option>This Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table id="cases-table">
+                        <thead>
+                            <tr>
+                                <th>Case ID</th>
+                                <th>Patient Name</th>
+                                <th>Date Submitted</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cases will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Case Submitted Successfully</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success); margin-bottom: 20px;"></i>
+                    <h3 style="margin-bottom: 10px;">Thank You!</h3>
+                    <p>Your case has been submitted successfully. Our team will review it and get back to you within 24-48 hours.</p>
+                    <p style="margin-top: 20px; font-weight: 600;">Case ID: <span id="submitted-case-id"></span></p>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 30px;">
+                        <button class="btn" onclick="Modal.hide('successModal')">Close</button>
+                        <button class="btn btn-secondary">View Case Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced JavaScript for professional features
+        
+        // API Base URL
+        const API_BASE = '/api';
+
+        // Auth class for authentication management
+        class Auth {
+            static getToken() { return localStorage.getItem('token'); }
+            static setToken(token) { localStorage.setItem('token', token); }
+            static removeToken() { 
+                localStorage.removeItem('token'); 
+                localStorage.removeItem('user'); 
+            }
+            static getUser() { 
+                const u = localStorage.getItem('user'); 
+                return u ? JSON.parse(u) : null; 
+            }
+            static setUser(user) { localStorage.setItem('user', JSON.stringify(user)); }
+            static isLoggedIn() { return !!this.getToken(); }
+            
+            static async checkAuth() { 
+                if (!this.isLoggedIn()) {
+                    window.location.href = '/';
+                    return false; 
+                } 
+                return true; 
+            }
+        }
+
+        // API class for handling server requests
+        class API {
+            static async request(endpoint, options = {}) {
+                const token = Auth.getToken();
+                const config = {
+                    method: options.method || 'GET',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        ...(options.headers || {}) 
+                    },
+                    body: options.body || undefined
+                };
+
+                if (token) config.headers.Authorization = `Bearer ${token}`;
+
+                const resp = await fetch(`${API_BASE}${endpoint}`, config);
+                const data = await resp.json().catch(() => ({}));
+
+                if (!resp.ok) throw new Error(data.error || 'Request failed');
+
+                return data;
+            }
+
+            static async uploadFiles(endpoint, formData) {
+                const token = Auth.getToken();
+                const resp = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: formData
+                });
+
+                const data = await resp.json().catch(() => ({}));
+                if (!resp.ok) throw new Error(data.error || 'Upload failed');
+
+                return data;
+            }
+        }
+
+        // FileUpload class for handling file operations
+        class FileUpload {
+            static dts = {};
+
+            static setupFileUpload(uploadAreaId, fileInputId, fileListId) {
+                const uploadArea = document.getElementById(uploadAreaId);
+                const fileInput = document.getElementById(fileInputId);
+                const fileList = document.getElementById(fileListId);
+
+                FileUpload.dts[fileInputId] = new DataTransfer();
+
+                uploadArea.addEventListener('click', () => fileInput.click());
+
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.style.borderColor = 'var(--primary)';
+                    uploadArea.style.backgroundColor = 'var(--primary-light)';
+                });
+
+                uploadArea.addEventListener('dragleave', () => {
+                    uploadArea.style.borderColor = '#ddd';
+                    uploadArea.style.backgroundColor = 'transparent';
+                });
+
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.style.borderColor = '#ddd';
+                    uploadArea.style.backgroundColor = 'transparent';
+                    if (e.dataTransfer.files.length) this.handleFiles(fileInputId, e.dataTransfer.files, fileList);
+                });
+
+                fileInput.addEventListener('change', () => {
+                    if (fileInput.files.length) this.handleFiles(fileInputId, fileInput.files, fileList);
+                });
+            }
+
+            static handleFiles(fileInputId, files, fileList) {
+                const dt = FileUpload.dts[fileInputId];
+                Array.from(files).forEach((file) => {
+                    dt.items.add(file);
+                    this.addFileToList(fileInputId, file, fileList);
+                });
+
+                document.getElementById(fileInputId).files = dt.files;
+                updateFilePreview();
+            }
+
+            static addFileToList(fileInputId, file, fileList) {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item fade-in';
+
+                const ext = file.name.split('.').pop().toLowerCase();
+                let icon = 'fa-file';
+                if (ext === 'stl') icon = 'fa-cube';
+                else if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) icon = 'fa-image';
+
+                fileItem.innerHTML = `
+                    <div class="file-icon"><i class="fas ${icon}"></i></div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${FileUpload.formatFileSize(file.size)}</div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="file-action remove-file" title="Remove"><i class="fas fa-times"></i></button>
+                    </div>
+                `;
+
+                fileItem.querySelector('.remove-file').addEventListener('click', () => {
+                    const dt = FileUpload.dts[fileInputId];
+                    for (let i = 0; i < dt.items.length; i++) {
+                        if (dt.items[i].getAsFile().name === file.name && 
+                            dt.items[i].getAsFile().size === file.size) {
+                            dt.items.remove(i);
+                            break;
+                        }
+                    }
+                    document.getElementById(fileInputId).files = dt.files;
+                    fileItem.remove();
+                    updateFilePreview();
+                });
+
+                fileList.appendChild(fileItem);
+            }
+
+            static formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024, sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+            }
+        }
+
+        // Modal class for modal operations
+        class Modal {
+            static show(id) { 
+                document.getElementById(id).style.display = 'flex'; 
+            }
+            static hide(id) { 
+                document.getElementById(id).style.display = 'none'; 
+            }
+            static setup() {
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('modal')) e.target.style.display = 'none';
+                });
+
+                document.querySelectorAll('.modal-close').forEach((btn) => {
+                    btn.addEventListener('click', function () {
+                        this.closest('.modal').style.display = 'none'; 
+                    });
+                });
+            }
+        }
+
+        // Multi-step form functionality
+        function setupMultiStepForm() {
+            const steps = document.querySelectorAll('.progress-step');
+            const formSteps = document.querySelectorAll('.form-step');
+            const progressFill = document.getElementById('progress-fill');
+            
+            // Next step buttons
+            document.querySelectorAll('.next-step').forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStep = document.querySelector('.form-step.active');
+                    const nextStepId = this.getAttribute('data-next');
+                    const nextStep = document.getElementById(`step-${nextStepId}`);
+                    
+                    if (validateStep(currentStep.id)) {
+                        // Update progress indicator
+                        steps.forEach(step => {
+                            if (step.getAttribute('data-step') === nextStepId) {
+                                step.classList.add('step-active');
+                                step.classList.remove('step-complete');
+                            } else if (parseInt(step.getAttribute('data-step')) < parseInt(nextStepId)) {
+                                step.classList.add('step-complete');
+                                step.classList.remove('step-active');
+                            } else {
+                                step.classList.remove('step-active', 'step-complete');
+                            }
+                        });
+                        
+                        // Update progress bar
+                        progressFill.style.width = `${(parseInt(nextStepId) - 1) * 33.33}%`;
+                        
+                        // Switch form steps
+                        currentStep.classList.remove('active');
+                        nextStep.classList.add('active');
+                        
+                        // If we're on the last step, update the preview
+                        if (nextStepId === '4') {
+                            updateCasePreview();
+                        }
+                    }
+                });
+            });
+            
+            // Previous step buttons
+            document.querySelectorAll('.prev-step').forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStep = document.querySelector('.form-step.active');
+                    const prevStepId = this.getAttribute('data-prev');
+                    const prevStep = document.getElementById(`step-${prevStepId}`);
+                    
+                    // Update progress indicator
+                    steps.forEach(step => {
+                        if (step.getAttribute('data-step') === prevStepId) {
+                            step.classList.add('step-active');
+                            step.classList.remove('step-complete');
+                        } else if (parseInt(step.getAttribute('data-step')) < parseInt(prevStepId)) {
+                            step.classList.add('step-complete');
+                            step.classList.remove('step-active');
+                        } else {
+                            step.classList.remove('step-active', 'step-complete');
+                        }
+                    });
+                    
+                    // Update progress bar
+                    progressFill.style.width = `${(parseInt(prevStepId) - 1) * 33.33}%`;
+                    
+                    // Switch form steps
+                    currentStep.classList.remove('active');
+                    prevStep.classList.add('active');
+                });
+            });
+        }
+        
+        // Validate current step before proceeding
+        function validateStep(stepId) {
+            const step = document.getElementById(stepId);
+            const inputs = step.querySelectorAll('input[required], select[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value) {
+                    input.style.borderColor = 'var(--danger)';
+                    isValid = false;
+                } else {
+                    input.style.borderColor = '';
+                }
+            });
+            
+            if (!isValid) {
+                alert('Please fill in all required fields before proceeding.');
+            }
+            
+            return isValid;
+        }
+        
+        // Update the case preview on the final step
+        function updateCasePreview() {
+            document.getElementById('preview-patientName').textContent = 
+                document.getElementById('patientName').value || 'Not provided';
+            document.getElementById('preview-dateOfBirth').textContent = 
+                document.getElementById('dateOfBirth').value || 'Not provided';
+            document.getElementById('preview-gender').textContent = 
+                document.getElementById('gender').value || 'Not provided';
+            document.getElementById('preview-caseType').textContent = 
+                document.getElementById('caseType').value || 'Not provided';
+            document.getElementById('preview-complexity').textContent = 
+                document.getElementById('complexity').value || 'Not provided';
+            document.getElementById('preview-treatmentDuration').textContent = 
+                document.getElementById('treatmentDuration').value ? 
+                document.getElementById('treatmentDuration').value + ' months' : 'Not provided';
+            document.getElementById('preview-previousTreatment').textContent = 
+                document.getElementById('previousTreatment').value || 'Not provided';
+            document.getElementById('preview-notes').textContent = 
+                document.getElementById('notes').value || 'No notes provided';
+            
+            // Show the preview section
+            document.getElementById('casePreview').style.display = 'block';
+        }
+        
+        // Update file preview in the final step
+        function updateFilePreview() {
+            const filePreview = document.getElementById('filePreview');
+            filePreview.innerHTML = '';
+            
+            // Get all file inputs
+            const fileInputs = ['stlInput', 'photoInput', 'xrayInput'];
+            let fileCount = 0;
+            
+            fileInputs.forEach(inputId => {
+                const files = document.getElementById(inputId).files;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    let icon = 'fa-file';
+                    let bgColor = '#6c757d';
+                    
+                    if (ext === 'stl') {
+                        icon = 'fa-cube';
+                        bgColor = '#0a74da';
+                    } else if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) {
+                        icon = 'fa-image';
+                        bgColor = '#28a745';
+                    }
+                    
+                    const previewFile = document.createElement('div');
+                    previewFile.className = 'preview-file';
+                    previewFile.innerHTML = `
+                        <div class="file-icon" style="background: ${bgColor}">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                    `;
+                    
+                    filePreview.appendChild(previewFile);
+                    fileCount++;
+                }
+            });
+            
+            if (fileCount === 0) {
+                filePreview.innerHTML = '<p>No files uploaded</p>';
+            }
+        }
+
+        // Login functionality
+        function showLoginForm() {
+            document.getElementById('login-section').style.display = 'flex';
+            document.getElementById('doctor-portal').style.display = 'none';
+            
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) loginForm.addEventListener('submit', handleLogin);
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('login-error');
+
+            try {
+                const data = await API.request('/doctors/login', { 
+                    method: 'POST', 
+                    body: JSON.stringify({ email, password }) 
+                });
+
+                Auth.setToken(data.token);
+                Auth.setUser(data.doctor);
+                initializeDoctorPortal();
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Initialize doctor portal after login
+        function initializeDoctorPortal() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('doctor-portal').style.display = 'block';
+
+            const user = Auth.getUser();
+            document.getElementById('doctor-name').textContent = user.name;
+            document.getElementById('doctor-avatar').textContent = 
+                user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+            // Setup file uploads
+            FileUpload.setupFileUpload('stlUpload', 'stlInput', 'stlFileList');
+            FileUpload.setupFileUpload('photoUpload', 'photoInput', 'photoFileList');
+            FileUpload.setupFileUpload('xrayUpload', 'xrayInput', 'xrayFileList');
+
+            // Setup multi-step form
+            setupMultiStepForm();
+
+            // Setup case form submission
+            const caseForm = document.getElementById('caseForm');
+            if (caseForm) caseForm.addEventListener('submit', handleCaseSubmission);
+
+            // Load doctor cases
+            loadDoctorCases();
+
+            // Setup modal functionality
+            Modal.setup();
+
+            // Setup logout functionality
+            document.querySelectorAll('.logout-btn').forEach((btn) => {
+                btn.addEventListener('click', (e) => { 
+                    e.preventDefault(); 
+                    Auth.removeToken(); 
+                    window.location.href = '/'; 
+                });
+            });
+        }
+
+        // Handle case submission
+        async function handleCaseSubmission(e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            const caseData = {
+                patientName: document.getElementById('patientName').value,
+                patientEmail: document.getElementById('patientEmail').value,
+                patientPhone: document.getElementById('patientPhone').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                gender: document.getElementById('gender').value,
+                caseType: document.getElementById('caseType').value,
+                complexity: document.getElementById('complexity').value,
+                treatmentDuration: document.getElementById('treatmentDuration').value,
+                previousTreatment: document.getElementById('previousTreatment').value,
+                notes: document.getElementById('notes').value
+            };
+
+            Object.entries(caseData).forEach(([k, v]) => formData.append(k, v));
+
+            Array.from(document.getElementById('stlInput').files).forEach((f) => formData.append('stlFiles', f));
+            Array.from(document.getElementById('photoInput').files).forEach((f) => formData.append('photos', f));
+            Array.from(document.getElementById('xrayInput').files).forEach((f) => formData.append('xrays', f));
+
+            try {
+                const result = await API.uploadFiles('/cases/submit', formData);
+                document.getElementById('submitted-case-id').textContent = result.caseId || '';
+                Modal.show('successModal');
+
+                // Reset form
+                document.getElementById('caseForm').reset();
+                
+                // Reset file uploads
+                ['stlInput', 'photoInput', 'xrayInput'].forEach(id => {
+                    FileUpload.dts[id] = new DataTransfer();
+                    document.getElementById(id).files = FileUpload.dts[id].files;
+                });
+                
+                document.getElementById('stlFileList').innerHTML = '';
+                document.getElementById('photoFileList').innerHTML = '';
+                document.getElementById('xrayFileList').innerHTML = '';
+                
+                // Reset to first step
+                document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+                document.getElementById('step-1').classList.add('active');
+                
+                document.querySelectorAll('.progress-step').forEach(step => {
+                    step.classList.remove('step-active', 'step-complete');
+                });
+                document.querySelector('.progress-step[data-step="1"]').classList.add('step-active');
+                
+                document.getElementById('progress-fill').style.width = '0%';
+                document.getElementById('casePreview').style.display = 'none';
+
+                loadDoctorCases();
+            } catch (error) {
+                alert('Error submitting case: ' + error.message);
+            }
+        }
+
+        // Load and display doctor cases
+        async function loadDoctorCases() {
+            try {
+                const cases = await API.request('/cases/my-cases');
+                displayCases(cases);
+
+                // Update stats
+                document.getElementById('total-cases').textContent = cases.length;
+                document.getElementById('pending-cases').textContent = 
+                    cases.filter(c => (c.status || '').toLowerCase() === 'pending').length;
+                document.getElementById('approved-cases').textContent = 
+                    cases.filter(c => (c.status || '').toLowerCase() === 'approved').length;
+            } catch (error) {
+                console.error('Error loading cases:', error);
+            }
+        }
+
+        // Display cases in the table
+        function displayCases(cases) {
+            const tbody = document.querySelector('#cases-table tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = cases.map(c => `
+                <tr>
+                    <td>${c.case_id}</td>
+                    <td>${c.patient_name}</td>
+                    <td>${new Date(c.submitted_at).toLocaleDateString()}</td>
+                    <td>${c.case_type}</td>
+                    <td><span class="status-badge status-${(c.status||'').toLowerCase().replace(' ', '-')}">${c.status}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="viewCase('${c.case_id}')"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn" onclick="downloadCase('${c.case_id}')"><i class="fas fa-download"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // View case details
+        async function viewCase(caseId) {
+            try {
+                const data = await API.request(`/cases/${caseId}`);
+                const fileLines = (data.files || []).map(f => `• ${f.original_name} (${(f.file_size/1024/1024).toFixed(2)} MB)`).join('\n');
+
+                alert(
+                    `Case ${caseId}\nPatient: ${data.patient_name}\nType: ${data.case_type}\nStatus: ${data.status}\nFiles:\n${fileLines || 'No files'}`
+                );
+            } catch (e) {
+                alert('Failed to load case: ' + e.message);
+            }
+        }
+
+        // Download case files
+        async function downloadCase(caseId) {
+            try {
+                const data = await API.request(`/cases/${caseId}`);
+                if (!data.files || data.files.length === 0) return alert('No files to download.');
+
+                data.files.forEach((f, idx) => {
+                    const a = document.createElement('a');
+                    a.href = f.url;
+                    a.download = f.original_name;
+                    a.target = '_blank';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                });
+            } catch (e) {
+                alert('Failed to download files: ' + e.message);
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            if (Auth.isLoggedIn()) {
+                initializeDoctorPortal();
+            } else {
+                showLoginForm();
+            }
+        });
+    </script>
+</body>
+</html>
