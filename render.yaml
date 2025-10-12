@@ -21,7 +21,3 @@ services:
           property: host
       - key: MONGO_URI
         sync: false  # Set manually in Render dashboard
-    disk:
-      name: uploads
-      mountPath: /app/uploads
-      sizeGB: 1
