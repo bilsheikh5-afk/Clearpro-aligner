@@ -33,7 +33,7 @@ app.use(morgan('dev'));
 
 // === Rate limiter ===
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 1000,
 });
 app.use(limiter);
@@ -60,12 +60,7 @@ app.use('/api/cases', caseRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// === Fallback for unknown routes ===
-app.get('*', (req, res) => {
-  res.sendFile(path.join(publicDir, 'login.html'));
-});
-
-// === 404 JSON handler (for API endpoints only) ===
+// === 404 JSON handler for APIs ===
 app.use((req, res) => {
   if (req.originalUrl.startsWith('/api/')) {
     return res.status(404).json({ error: 'Not found' });
