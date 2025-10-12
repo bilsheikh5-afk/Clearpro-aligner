@@ -15,6 +15,13 @@ import dashboardRoutes from './routes/dashboard.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const publicDir = path.join(__dirname, '..', 'public');
+app.use(express.static(publicDir));
+
+app.get('/', (req, res) => res.sendFile(path.join(publicDir, 'login.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(publicDir, 'dashboard.html')));
+app.get('/cases', (req, res) => res.sendFile(path.join(publicDir, 'cases.html')));
+
 const app = express();
 
 // ===== Middleware =====
