@@ -26,7 +26,10 @@ const publicDir = path.join(__dirname, '..', 'public');
 
 // === Middleware ===
 app.use(helmet());
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({
+  origin: ['https://shboard.render.com', 'https://clearpro-fullstack.onrender.com'],
+  credentials: true,
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
