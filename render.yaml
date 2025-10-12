@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: clearpro-fullstack
+    env: docker
+    plan: free
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: UPLOAD_DIR
+        value: uploads
+      - key: BASE_URL
+        fromService:
+          type: web
+          name: clearpro-fullstack
+          property: host
+      - key: MONGO_URI
+        sync: false  # Set manually in Render dashboard
+    disk:
+      name: uploads
+      mountPath: /app/uploads
+      sizeGB: 1

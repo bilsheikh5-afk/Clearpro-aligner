@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:6.0
+    restart: always
+    container_name: clearpro_mongo
+    environment:
+      MONGO_INITDB_DATABASE: clearpro
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  backend:
+    build: .
+    container_name: clearpro_backend
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      MONGO_URI: mongodb://mongo:27017/clearpro
+      JWT_SECRET: supersecret_jwt_key_change_me
+      UPLOAD_DIR: uploads
+      BASE_URL: http://localhost:4000
+    volumes:
+      - ./uploads:/app/uploads
+      - ./public:/app/public
+    command: npm start
+
+volumes:
+  mongo_data:
