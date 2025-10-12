@@ -42,9 +42,7 @@ app.use(limiter);
 const uploadDir = process.env.UPLOAD_DIR || 'uploads';
 app.use('/uploads', express.static(path.join(__dirname, '..', uploadDir)));
 
-// === Serve frontend files ===
-app.use(express.static(publicDir));
-
+// === Serve frontend pages explicitly ===
 app.get('/', (req, res) => res.sendFile(path.join(publicDir, 'login.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(publicDir, 'dashboard.html')));
 app.get('/cases', (req, res) => res.sendFile(path.join(publicDir, 'cases.html')));
@@ -61,11 +59,14 @@ app.use('/api/files', fileRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
 // === 404 JSON handler for APIs ===
-app.use((req, res) => {
+app.use((req, res, next) => {
   if (req.originalUrl.startsWith('/api/')) {
     return res.status(404).json({ error: 'Not found' });
   }
-  res.sendFile(path.join(publicDir, 'login.html'));
+  next();
 });
+
+// === Fallback for unknown non-API routes ===
+app.get('*', (req, res) => res.sendFile(path.join(publicDir, 'login.html')));
 
 export default app;
