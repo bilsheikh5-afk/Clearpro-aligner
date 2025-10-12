@@ -1187,7 +1187,27 @@
             </div>
         </div>
     </div>
+<script>
+const API_BASE = 'https://clearpro-fullstack.onrender.com/api';
+    // ✅ Fetch dashboard stats
+async function loadDashboardStats() {
+  try {
+    const res = await fetch(`${API_BASE}/dashboard/stats`);
+    if (!res.ok) throw new Error('Failed to load dashboard data');
+    const data = await res.json();
 
+    // Update the dashboard values dynamically
+    document.querySelectorAll('.stat-value')[0].textContent = data.totalDoctors;
+    document.querySelectorAll('.stat-value')[1].textContent = data.totalCases;
+    document.querySelectorAll('.stat-value')[2].textContent = data.activePatients;
+    document.querySelectorAll('.stat-value')[3].textContent = `${data.successRate}%`;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// ✅ Call it once the DOM is ready
+document.addEventListener('DOMContentLoaded', loadDashboardStats);
     <script>
         // Toggle sidebar on mobile
         document.querySelector('.menu-toggle').addEventListener('click', function() {
