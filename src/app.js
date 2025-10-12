@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import './db.js'; // Handles Mongo connection
+import './db.js';
 import authRoutes from './routes/auth.js';
 import doctorRoutes from './routes/doctors.js';
 import caseRoutes from './routes/cases.js';
@@ -57,7 +57,12 @@ app.get('/doctor', (req, res) => {
   res.sendFile(path.join(publicDir, 'doctor.html'));
 });
 
-// ===== 404 handler (MUST BE LAST) =====
+// ===== Fallback for SPA client-side routing =====
+app.get('*', (req, res) => {
+  res.sendFile(path.join(publicDir, 'dash.html'));
+});
+
+// ===== 404 handler =====
 app.use((req, res) => res.status(404).json({ error: 'Not found' }));
 
 export default app;
