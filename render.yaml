@@ -5,19 +5,22 @@ services:
     plan: free
     autoDeploy: true
     dockerfilePath: ./Dockerfile
+
     envVars:
       - key: NODE_ENV
         value: production
+
       - key: PORT
         value: 4000
+
       - key: JWT_SECRET
         generateValue: true
+
       - key: UPLOAD_DIR
         value: uploads
+
       - key: BASE_URL
-        fromService:
-          type: web
-          name: clearpro-fullstack
-          property: host
+        value: https://clearpro-fullstack.onrender.com
+
       - key: MONGO_URI
-        sync: false  # Set manually in Render dashboard
+        value: mongodb+srv://bilsheikh5_db_user:Poppkgo%401@cluster0.lo7sj9t.mongodb.net/clearpro?retryWrites=true&w=majority&appName=Cluster0
