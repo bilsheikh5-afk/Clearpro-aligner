@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 // === Initialize Express ===
 const app = express();
 
-// === Database connection ===
+// === Database ===
 import "./db.js";
 
 // === Route imports ===
@@ -29,8 +29,8 @@ app.use(helmet());
 app.use(
   cors({
     origin: [
-      "https://shboard.render.com", // frontend
-      "https://clearpro-fullstack.onrender.com", // backend
+      "https://shboard.render.com",
+      "https://clearpro-fullstack.onrender.com",
     ],
     credentials: true,
   })
@@ -39,18 +39,17 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-// === Rate limiter (basic protection) ===
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 min
-  max: 1000,
-});
-app.use(limiter);
+// === Rate limiter ===
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 1000,
+  })
+);
 
-// === Serve static uploads ===
+// === Static folders ===
 const uploadDir = process.env.UPLOAD_DIR || "uploads";
 app.use("/uploads", express.static(path.join(__dirname, "..", uploadDir)));
-
-// === Serve frontend static assets ===
 app.use(express.static(publicDir));
 
 // === Health check ===
@@ -63,36 +62,27 @@ app.use("/api/cases", caseRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
-// === Frontend routes ===
+// === Frontend pages ===
+app.get("/", (req, res) => res.sendFile(path.join(publicDir, "login.html")));
+app.get("/login", (req, res) => res.sendFile(path.join(publicDir, "login.html")));
+app.get("/dashboard", (req, res) =>
+  res.sendFile(path.join(publicDir, "dashboard.html"))
+);
+app.get("/cases", (req, res) =>
+  res.sendFile(path.join(publicDir, "cases.html"))
+);
+app.get("/new-case", (req, res) =>
+  res.sendFile(path.join(publicDir, "new-case.html"))
+);
+app.get("/doctor", (req, res) =>
+  res.sendFile(path.join(publicDir, "doctor.html"))
+);
 
-// Root → login page
-app.get("/", (req, res) => {
-  res.sendFile(path.join(publicDir, "login.html"));
-});
-
-// Any direct .html route (e.g., /dashboard.html, /cases.html)
-app.get("/:page.html", (req, res, next) => {
-  const filePath = path.join(publicDir, `${req.params.page}.html`);
-  res.sendFile(filePath, (err) => {
-    if (err) next();
-  });
-});
-
-// Short URLs (e.g., /dashboard, /cases)
-app.get("/:page", (req, res, next) => {
-  const filePath = path.join(publicDir, `${req.params.page}.html`);
-  res.sendFile(filePath, (err) => {
-    if (err) next();
-  });
-});
-
-// === 404 fallback for missing routes ===
-app.use((req, res) => {
-  if (req.originalUrl.startsWith("/api/")) {
-    res.status(404).json({ error: "Not found" });
-  } else {
-    res.sendFile(path.join(publicDir, "login.html"));
-  }
+// === Catch-all for unknown non-API routes ===
+app.get("*", (req, res) => {
+  if (req.originalUrl.startsWith("/api/"))
+    return res.status(404).json({ error: "Not found" });
+  res.status(404).sendFile(path.join(publicDir, "login.html"));
 });
 
 export default app;
