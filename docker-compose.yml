@@ -1,36 +1,23 @@
-version: "3.9"
+# Use the latest Node.js runtime
+FROM node:20-alpine
 
-services:
-  mongo:
-    image: mongo:6.0
-    restart: always
-    container_name: clearpro_mongo
-    environment:
-      MONGO_INITDB_DATABASE: clearpro
-    volumes:
-      - mongo_data:/data/db
-    ports:
-      - "27017:27017"
+# Set working directory
+WORKDIR /app
 
-  backend:
-    build: .
-    container_name: clearpro_backend
-    restart: always
-    depends_on:
-      - mongo
-    ports:
-      - "4000:4000"
-    environment:
-      NODE_ENV: production
-      PORT: 4000
-      MONGO_URI: mongodb://mongo:27017/clearpro
-      JWT_SECRET: supersecret_jwt_key_change_me
-      UPLOAD_DIR: uploads
-      BASE_URL: http://localhost:4000
-    volumes:
-      - ./uploads:/app/uploads
-      - ./public:/app/public
-    command: npm start
+# Copy package files first
+COPY package*.json ./
 
-volumes:
-  mongo_data:
+# Install dependencies
+RUN npm install --omit=dev
+
+# Copy the rest of the app
+COPY . .
+
+# Expose the Render-provided port
+EXPOSE $PORT
+
+# Set environment variables
+ENV NODE_ENV=production
+
+# Start the app
+CMD ["npm", "start"]
