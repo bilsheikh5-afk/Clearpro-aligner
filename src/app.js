@@ -29,8 +29,8 @@ app.use(helmet());
 app.use(
   cors({
     origin: [
-      "https://shboard.render.com",
-      "https://clearpro-fullstack.onrender.com",
+      "https://shboard.render.com", // your frontend domain if you deploy it separately
+      "https://clearpro-fullstack.onrender.com", // your backend domain
     ],
     credentials: true,
   })
@@ -62,26 +62,41 @@ app.use("/api/cases", caseRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
-// === Frontend pages ===
+// === Frontend routes ===
+// Explicit routes for all HTML pages
 app.get("/", (req, res) => res.sendFile(path.join(publicDir, "login.html")));
 app.get("/login", (req, res) => res.sendFile(path.join(publicDir, "login.html")));
 app.get("/dashboard", (req, res) =>
   res.sendFile(path.join(publicDir, "dashboard.html"))
 );
+app.get("/dashboard.html", (req, res) =>
+  res.sendFile(path.join(publicDir, "dashboard.html"))
+);
 app.get("/cases", (req, res) =>
+  res.sendFile(path.join(publicDir, "cases.html"))
+);
+app.get("/cases.html", (req, res) =>
   res.sendFile(path.join(publicDir, "cases.html"))
 );
 app.get("/new-case", (req, res) =>
   res.sendFile(path.join(publicDir, "new-case.html"))
 );
+app.get("/new-case.html", (req, res) =>
+  res.sendFile(path.join(publicDir, "new-case.html"))
+);
 app.get("/doctor", (req, res) =>
   res.sendFile(path.join(publicDir, "doctor.html"))
 );
+app.get("/doctor.html", (req, res) =>
+  res.sendFile(path.join(publicDir, "doctor.html"))
+);
 
-// === Catch-all for unknown non-API routes ===
-app.get("*", (req, res) => {
-  if (req.originalUrl.startsWith("/api/"))
+// === Fallback for non-existent pages ===
+app.use((req, res) => {
+  if (req.originalUrl.startsWith("/api/")) {
     return res.status(404).json({ error: "Not found" });
+  }
+  // For any non-API route not matched above → go to login
   res.status(404).sendFile(path.join(publicDir, "login.html"));
 });
 
