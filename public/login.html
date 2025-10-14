@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login | ClearPro</title>
 
-  <!-- Fonts & Icons -->
+  <!-- Font & Icons -->
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
     rel="stylesheet"
@@ -164,25 +164,53 @@
     </form>
   </div>
 
-  <!-- ✅ Simple JS (Click-to-Toggle Only) -->
+  <!-- ✅ Show/Hide Password Script -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const passwordInput = document.getElementById("adminPassword");
       const togglePassword = document.getElementById("toggleAdminPassword");
+      const form = document.getElementById("adminLoginForm");
+      const errorMsg = document.getElementById("errorMsg");
 
-      if (togglePassword && passwordInput) {
-        togglePassword.addEventListener("click", () => {
-          if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            togglePassword.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
-            togglePassword.style.color = "#007bff";
-          } else {
-            passwordInput.type = "password";
-            togglePassword.innerHTML = '<i class="fa-regular fa-eye"></i>';
-            togglePassword.style.color = "#999";
-          }
-        });
-      }
+      // 👁️ Toggle Password Visibility
+      togglePassword.addEventListener("click", () => {
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          togglePassword.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
+          togglePassword.style.color = "#007bff";
+        } else {
+          passwordInput.type = "password";
+          togglePassword.innerHTML = '<i class="fa-regular fa-eye"></i>';
+          togglePassword.style.color = "#999";
+        }
+      });
+
+      // 🧩 Handle Login Form
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errorMsg.textContent = "";
+
+        const email = document.getElementById("adminEmail").value.trim();
+        const password = passwordInput.value.trim();
+
+        try {
+          const response = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "Invalid credentials");
+
+          // Save token & redirect
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          window.location.href = "/admin-dashboard.html";
+        } catch (err) {
+          errorMsg.textContent = err.message;
+        }
+      });
     });
   </script>
 </body>
