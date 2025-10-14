@@ -143,26 +143,25 @@
     </form>
   </div>
 
-  <!-- ✅ Working JS -->
+  <!-- ✅ Fixed JavaScript -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const passwordInput = document.getElementById('adminPassword');
       const togglePassword = document.getElementById('toggleAdminPassword');
-
-      if (passwordInput && togglePassword) {
-        const icon = togglePassword.querySelector('i');
-        togglePassword.addEventListener('click', () => {
-          const isHidden = passwordInput.type === 'password';
-          passwordInput.type = isHidden ? 'text' : 'password';
-          icon.classList.toggle('fa-eye');
-          icon.classList.toggle('fa-eye-slash');
-          togglePassword.style.color = isHidden ? '#007bff' : '#00AEEF';
-        });
-      }
-
+      const icon = togglePassword.querySelector('i');
       const form = document.getElementById('adminLoginForm');
       const errorMsg = document.getElementById('errorMsg');
 
+      // ✅ Password Show/Hide Toggle (Fixed)
+      togglePassword.addEventListener('click', () => {
+        const isHidden = passwordInput.type === 'password';
+        passwordInput.type = isHidden ? 'text' : 'password';
+        icon.classList.toggle('fa-eye', !isHidden);
+        icon.classList.toggle('fa-eye-slash', isHidden);
+        togglePassword.style.color = isHidden ? '#007bff' : '#999';
+      });
+
+      // ✅ Login Handling
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         errorMsg.textContent = '';
