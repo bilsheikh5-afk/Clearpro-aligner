@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login | ClearPro</title>
 
   <!-- Font & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
 
   <style>
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
     }
 
     body {
@@ -20,14 +28,14 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: linear-gradient(135deg, #007bff, #00AEEF);
+      background: linear-gradient(135deg, #007bff, #00aeef);
     }
 
     .login-container {
       background: #fff;
       padding: 40px;
       border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       width: 100%;
       max-width: 400px;
       text-align: center;
@@ -45,7 +53,8 @@
       font-weight: 700;
     }
 
-    input[type="email"], input[type="password"] {
+    input[type="email"],
+    input[type="password"] {
       width: 100%;
       padding: 12px 14px;
       margin-bottom: 15px;
@@ -58,7 +67,7 @@
     input:focus {
       border-color: #007bff;
       outline: none;
-      box-shadow: 0 0 0 2px rgba(0,123,255,0.2);
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
     }
 
     .password-container {
@@ -73,9 +82,10 @@
       cursor: pointer;
       color: #999;
       transition: color 0.3s ease;
+      font-size: 18px;
     }
 
-    .toggle-password:hover {
+    .toggle-password:active {
       color: #007bff;
     }
 
@@ -116,23 +126,34 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <img src="/assets/logo.png" alt="ClearPro Logo" class="logo">
+    <img src="/assets/logo.png" alt="ClearPro Logo" class="logo" />
     <h2>Admin Login</h2>
 
     <form id="adminLoginForm">
-      <input type="email" id="adminEmail" placeholder="Email" required>
+      <input type="email" id="adminEmail" placeholder="Email" required />
 
       <div class="password-container">
-        <input type="password" id="adminPassword" placeholder="Password" required>
-        <span id="toggleAdminPassword" class="toggle-password">
-          <i class="fa-solid fa-eye"></i>
+        <input
+          type="password"
+          id="adminPassword"
+          placeholder="Password"
+          required
+        />
+        <span id="toggleAdminPassword" class="toggle-password" title="Press and hold to show password">
+          <i class="fa-regular fa-eye"></i>
         </span>
       </div>
 
@@ -143,46 +164,62 @@
     </form>
   </div>
 
-  <!-- ✅ Fixed JavaScript -->
+  <!-- ✅ Press & Hold Password Toggle -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const passwordInput = document.getElementById('adminPassword');
-      const togglePassword = document.getElementById('toggleAdminPassword');
-      const icon = togglePassword.querySelector('i');
-      const form = document.getElementById('adminLoginForm');
-      const errorMsg = document.getElementById('errorMsg');
+    document.addEventListener("DOMContentLoaded", function () {
+      const passwordInput = document.getElementById("adminPassword");
+      const togglePassword = document.getElementById("toggleAdminPassword");
+      const form = document.getElementById("adminLoginForm");
+      const errorMsg = document.getElementById("errorMsg");
 
-      // ✅ Password Show/Hide Toggle (Fixed)
-      togglePassword.addEventListener('click', () => {
-        const isHidden = passwordInput.type === 'password';
-        passwordInput.type = isHidden ? 'text' : 'password';
-        icon.classList.toggle('fa-eye', !isHidden);
-        icon.classList.toggle('fa-eye-slash', isHidden);
-        togglePassword.style.color = isHidden ? '#007bff' : '#999';
+      // ✅ Press & hold to show password (works for desktop & mobile)
+      const showPassword = () => {
+        passwordInput.type = "text";
+        togglePassword.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
+        togglePassword.style.color = "#007bff";
+      };
+
+      const hidePassword = () => {
+        passwordInput.type = "password";
+        togglePassword.innerHTML = '<i class="fa-regular fa-eye"></i>';
+        togglePassword.style.color = "#999";
+      };
+
+      // Desktop: mousedown / mouseup
+      togglePassword.addEventListener("mousedown", showPassword);
+      togglePassword.addEventListener("mouseup", hidePassword);
+      togglePassword.addEventListener("mouseleave", hidePassword);
+
+      // Mobile: touchstart / touchend
+      togglePassword.addEventListener("touchstart", (e) => {
+        e.preventDefault(); // prevent double-tap zoom
+        showPassword();
       });
+      togglePassword.addEventListener("touchend", hidePassword);
+      togglePassword.addEventListener("touchcancel", hidePassword);
 
-      // ✅ Login Handling
-      form.addEventListener('submit', async (e) => {
+      // ✅ Login request
+      form.addEventListener("submit", async function (e) {
         e.preventDefault();
-        errorMsg.textContent = '';
+        errorMsg.textContent = "";
 
-        const email = document.getElementById('adminEmail').value.trim();
+        const email = document.getElementById("adminEmail").value.trim();
         const password = passwordInput.value.trim();
 
         try {
-          const response = await fetch('/api/admin/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+          const response = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
           });
 
           const data = await response.json();
-          if (!response.ok) throw new Error(data.error || 'Invalid credentials');
+          if (!response.ok) throw new Error(data.error || "Invalid credentials");
 
           // Save token and redirect
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.user));
-          window.location.href = '/admin-dashboard.html';
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          window.location.href = "/admin-dashboard.html";
         } catch (err) {
           errorMsg.textContent = err.message;
         }
