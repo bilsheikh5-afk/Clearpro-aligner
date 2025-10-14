@@ -1,7 +1,30 @@
-/* Centered logo styling */
+/* =======================
+   ClearPro Aligner Theme
+   ======================= */
+:root {
+  --primary-color: #003366;   /* Deep navy */
+  --accent-color: #00AEEF;    /* Bright ClearPro blue */
+  --bg-color: #F5F8FB;        /* Soft light gray-blue background */
+  --text-color: #1A1A1A;      /* Neutral dark gray for readability */
+}
+
+/* =======================
+   General Page Layout
+   ======================= */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', 'Inter', sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* =======================
+   Logo Styling
+   ======================= */
 .logo {
   display: block;
-  width: 160px;           /* adjust for your design */
+  width: 160px;
   height: auto;
   margin: 0 auto 20px auto;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
@@ -12,19 +35,98 @@
   transform: scale(1.05);
 }
 
-/* Optional - refine login card alignment */
+/* =======================
+   Login Container
+   ======================= */
 .login-container {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: #f9fbfd; /* soft background */
+  background: var(--bg-color);
+  padding: 20px;
 }
 
+/* =======================
+   Login Card
+   ======================= */
 .login-card {
   background: #fff;
-  padding: 40px;
+  padding: 40px 50px;
   border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   text-align: center;
+  width: 100%;
+  max-width: 360px;
+}
+
+.login-card h2 {
+  color: var(--primary-color);
+  margin-bottom: 25px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* =======================
+   Form Inputs
+   ======================= */
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 5px rgba(0, 174, 239, 0.4);
+}
+
+/* =======================
+   Buttons
+   ======================= */
+button {
+  background: var(--accent-color);
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.1s ease-in-out;
+}
+
+button:hover {
+  background: var(--primary-color);
+  transform: scale(1.03);
+}
+
+/* =======================
+   Error Message
+   ======================= */
+.error {
+  color: #d9534f;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+/* =======================
+   Responsive
+   ======================= */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 30px 25px;
+    max-width: 300px;
+  }
+  .logo {
+    width: 130px;
+  }
 }
