@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login | ClearPro</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <!-- Font Awesome for eye icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <img src="/assets/logo.png" alt="ClearPro Aligner Logo" class="logo">
+      <h2>Admin Login</h2>
+
+      <form id="adminLoginForm">
+        <input type="email" id="adminEmail" placeholder="Email" required>
+
+        <div class="password-container">
+          <input type="password" id="adminPassword" placeholder="Password" required>
+          <span id="toggleAdminPassword" class="toggle-password">
+            <i class="fa-solid fa-eye"></i>
+          </span>
+        </div>
+
+        <button type="submit" class="login-btn">Login</button>
+
+        <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
+
+        <p id="adminErrorMsg" class="error"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/admin-login.js"></script>
+
+  <!-- ✅ Show/Hide Password Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const passwordInput = document.getElementById('adminPassword');
+      const togglePassword = document.getElementById('toggleAdminPassword');
+
+      if (passwordInput && togglePassword) {
+        const icon = togglePassword.querySelector('i');
+
+        togglePassword.addEventListener('click', () => {
+          const isPassword = passwordInput.type === 'password';
+          passwordInput.type = isPassword ? 'text' : 'password';
+          icon.classList.toggle('fa-eye');
+          icon.classList.toggle('fa-eye-slash');
+          togglePassword.style.color = isPassword ? '#007bff' : '#00AEEF';
+        });
+      }
+    });
+  </script>
+</body>
+</html>
