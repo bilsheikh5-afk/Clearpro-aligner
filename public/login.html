@@ -152,7 +152,11 @@
           placeholder="Password"
           required
         />
-        <span id="toggleAdminPassword" class="toggle-password" title="Press and hold to show password">
+        <span
+          id="toggleAdminPassword"
+          class="toggle-password"
+          title="Tap or hold to show password"
+        >
           <i class="fa-regular fa-eye"></i>
         </span>
       </div>
@@ -164,7 +168,7 @@
     </form>
   </div>
 
-  <!-- ✅ Press & Hold Password Toggle -->
+  <!-- ✅ Fixed JS (Click + Press & Hold) -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const passwordInput = document.getElementById("adminPassword");
@@ -172,31 +176,51 @@
       const form = document.getElementById("adminLoginForm");
       const errorMsg = document.getElementById("errorMsg");
 
-      // ✅ Press & hold to show password (works for desktop & mobile)
+      if (!passwordInput || !togglePassword) return;
+
+      // --- helpers ---
       const showPassword = () => {
         passwordInput.type = "text";
         togglePassword.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
         togglePassword.style.color = "#007bff";
       };
-
       const hidePassword = () => {
         passwordInput.type = "password";
         togglePassword.innerHTML = '<i class="fa-regular fa-eye"></i>';
         togglePassword.style.color = "#999";
       };
 
-      // Desktop: mousedown / mouseup
-      togglePassword.addEventListener("mousedown", showPassword);
-      togglePassword.addEventListener("mouseup", hidePassword);
-      togglePassword.addEventListener("mouseleave", hidePassword);
-
-      // Mobile: touchstart / touchend
-      togglePassword.addEventListener("touchstart", (e) => {
-        e.preventDefault(); // prevent double-tap zoom
-        showPassword();
+      // --- click toggle ---
+      togglePassword.addEventListener("click", () => {
+        if (passwordInput.type === "password") showPassword();
+        else hidePassword();
       });
-      togglePassword.addEventListener("touchend", hidePassword);
-      togglePassword.addEventListener("touchcancel", hidePassword);
+
+      // --- press & hold ---
+      const startHold = (e) => {
+        e.preventDefault();
+        showPassword();
+      };
+      const endHold = () => {
+        hidePassword();
+      };
+
+      // Desktop
+      togglePassword.addEventListener("mousedown", startHold);
+      togglePassword.addEventListener("mouseup", endHold);
+      togglePassword.addEventListener("mouseleave", endHold);
+
+      // Mobile
+      togglePassword.addEventListener(
+        "touchstart",
+        (e) => {
+          e.preventDefault();
+          startHold(e);
+        },
+        { passive: false }
+      );
+      togglePassword.addEventListener("touchend", endHold);
+      togglePassword.addEventListener("touchcancel", endHold);
 
       // ✅ Login request
       form.addEventListener("submit", async function (e) {
