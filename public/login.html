@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login | ClearPro</title>
 
-  <!-- Font & Icons -->
+  <!-- Fonts & Icons -->
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
     rel="stylesheet"
@@ -85,7 +85,7 @@
       font-size: 18px;
     }
 
-    .toggle-password:active {
+    .toggle-password:hover {
       color: #007bff;
     }
 
@@ -152,11 +152,7 @@
           placeholder="Password"
           required
         />
-        <span
-          id="toggleAdminPassword"
-          class="toggle-password"
-          title="Tap or hold to show password"
-        >
+        <span id="toggleAdminPassword" class="toggle-password" title="Show Password">
           <i class="fa-regular fa-eye"></i>
         </span>
       </div>
@@ -168,86 +164,25 @@
     </form>
   </div>
 
-  <!-- ✅ Fixed JS (Click + Press & Hold) -->
+  <!-- ✅ Simple JS (Click-to-Toggle Only) -->
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", () => {
       const passwordInput = document.getElementById("adminPassword");
       const togglePassword = document.getElementById("toggleAdminPassword");
-      const form = document.getElementById("adminLoginForm");
-      const errorMsg = document.getElementById("errorMsg");
 
-      if (!passwordInput || !togglePassword) return;
-
-      // --- helpers ---
-      const showPassword = () => {
-        passwordInput.type = "text";
-        togglePassword.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
-        togglePassword.style.color = "#007bff";
-      };
-      const hidePassword = () => {
-        passwordInput.type = "password";
-        togglePassword.innerHTML = '<i class="fa-regular fa-eye"></i>';
-        togglePassword.style.color = "#999";
-      };
-
-      // --- click toggle ---
-      togglePassword.addEventListener("click", () => {
-        if (passwordInput.type === "password") showPassword();
-        else hidePassword();
-      });
-
-      // --- press & hold ---
-      const startHold = (e) => {
-        e.preventDefault();
-        showPassword();
-      };
-      const endHold = () => {
-        hidePassword();
-      };
-
-      // Desktop
-      togglePassword.addEventListener("mousedown", startHold);
-      togglePassword.addEventListener("mouseup", endHold);
-      togglePassword.addEventListener("mouseleave", endHold);
-
-      // Mobile
-      togglePassword.addEventListener(
-        "touchstart",
-        (e) => {
-          e.preventDefault();
-          startHold(e);
-        },
-        { passive: false }
-      );
-      togglePassword.addEventListener("touchend", endHold);
-      togglePassword.addEventListener("touchcancel", endHold);
-
-      // ✅ Login request
-      form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        errorMsg.textContent = "";
-
-        const email = document.getElementById("adminEmail").value.trim();
-        const password = passwordInput.value.trim();
-
-        try {
-          const response = await fetch("/api/admin/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-          });
-
-          const data = await response.json();
-          if (!response.ok) throw new Error(data.error || "Invalid credentials");
-
-          // Save token and redirect
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
-          window.location.href = "/admin-dashboard.html";
-        } catch (err) {
-          errorMsg.textContent = err.message;
-        }
-      });
+      if (togglePassword && passwordInput) {
+        togglePassword.addEventListener("click", () => {
+          if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            togglePassword.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
+            togglePassword.style.color = "#007bff";
+          } else {
+            passwordInput.type = "password";
+            togglePassword.innerHTML = '<i class="fa-regular fa-eye"></i>';
+            togglePassword.style.color = "#999";
+          }
+        });
+      }
     });
   </script>
 </body>
