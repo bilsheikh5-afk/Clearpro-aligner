@@ -1,0 +1,30 @@
+/* Centered logo styling */
+.logo {
+  display: block;
+  width: 160px;           /* adjust for your design */
+  height: auto;
+  margin: 0 auto 20px auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+/* Optional - refine login card alignment */
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #f9fbfd; /* soft background */
+}
+
+.login-card {
+  background: #fff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
