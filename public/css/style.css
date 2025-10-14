@@ -9,7 +9,7 @@
 }
 
 /* =======================
-   General Page Layout
+   Layout & Background
    ======================= */
 body {
   font-family: 'Inter', Arial, sans-serif;
@@ -54,13 +54,28 @@ h2 {
 }
 
 /* =======================
-   Inputs
+   Form Layout
+   ======================= */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Equal width for all inputs and button */
+input[type="email"],
+input[type="password"],
+.login-btn {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* =======================
+   Input Fields
    ======================= */
 input[type="email"],
 input[type="password"] {
-  width: 100%;
   padding: 12px 14px;
-  margin-bottom: 15px;
   border: 1px solid #d0d8e2;
   border-radius: 8px;
   font-size: 15px;
@@ -74,19 +89,21 @@ input:focus {
 }
 
 /* =======================
-   Password Toggle
+   Password Field
    ======================= */
 .password-container {
   position: relative;
+  width: 100%;
 }
 
 .password-container input {
-  padding-right: 40px;
+  width: 100%;
+  padding-right: 42px;
 }
 
 .toggle-password {
   position: absolute;
-  right: 12px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
@@ -103,7 +120,6 @@ input:focus {
    Login Button
    ======================= */
 .login-btn {
-  width: 100%;
   background: linear-gradient(90deg, #00aaff, #007bff);
   color: #fff;
   padding: 12px 0;
@@ -121,13 +137,29 @@ input:focus {
 }
 
 /* =======================
+   Forgot Password Link
+   ======================= */
+.forgot-password {
+  font-size: 14px;
+  color: var(--accent-color);
+  text-decoration: none;
+  margin-top: 5px;
+  transition: color 0.2s ease;
+}
+
+.forgot-password:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* =======================
    Error Message
    ======================= */
 .error {
   color: #d93025;
   font-size: 14px;
-  margin-top: 10px;
-  min-height: 20px;
+  margin-top: 5px;
+  min-height: 18px;
 }
 
 /* =======================
@@ -154,31 +186,8 @@ input:focus {
     padding: 10px 0;
     font-size: 15px;
   }
-}
 
-/* =======================
-   (Optional) Dark Mode
-   ======================= */
-/*
-@media (prefers-color-scheme: dark) {
-  body {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-  }
-  .login-card {
-    background: #1e293b;
-    color: #f1f5f9;
-  }
-  input {
-    background: #334155;
-    color: #f1f5f9;
-    border-color: #475569;
-  }
-  input:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(0, 174, 239, 0.15);
-  }
-  .login-btn {
-    background: linear-gradient(90deg, #00AEEF, #007bff);
+  .forgot-password {
+    font-size: 13px;
   }
 }
-*/
