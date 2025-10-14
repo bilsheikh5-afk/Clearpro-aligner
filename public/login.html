@@ -2,40 +2,148 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login | ClearPro</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <!-- Font Awesome for eye icon -->
+
+  <!-- Font & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #007bff, #00AEEF);
+    }
+
+    .login-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #007bff;
+      font-weight: 700;
+    }
+
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0,123,255,0.2);
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #999;
+      transition: color 0.3s ease;
+    }
+
+    .toggle-password:hover {
+      color: #007bff;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .forgot-password {
+      display: block;
+      margin-top: 12px;
+      text-decoration: none;
+      color: #007bff;
+      font-size: 14px;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    #errorMsg {
+      color: #dc3545;
+      margin-top: 10px;
+      font-size: 14px;
+      min-height: 18px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
   <div class="login-container">
-    <div class="login-card">
-      <img src="/assets/logo.png" alt="ClearPro Aligner Logo" class="logo">
-      <h2>Admin Login</h2>
+    <img src="/assets/logo.png" alt="ClearPro Logo" class="logo">
+    <h2>Admin Login</h2>
 
-      <form id="adminLoginForm">
-        <input type="email" id="adminEmail" placeholder="Email" required>
+    <form id="adminLoginForm">
+      <input type="email" id="adminEmail" placeholder="Email" required>
 
-        <div class="password-container">
-          <input type="password" id="adminPassword" placeholder="Password" required>
-          <span id="toggleAdminPassword" class="toggle-password">
-            <i class="fa-solid fa-eye"></i>
-          </span>
-        </div>
+      <div class="password-container">
+        <input type="password" id="adminPassword" placeholder="Password" required>
+        <span id="toggleAdminPassword" class="toggle-password">
+          <i class="fa-solid fa-eye"></i>
+        </span>
+      </div>
 
-        <button type="submit" class="login-btn">Login</button>
+      <button type="submit">Login</button>
+      <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
 
-        <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
-
-        <p id="adminErrorMsg" class="error"></p>
-      </form>
-    </div>
+      <p id="errorMsg"></p>
+    </form>
   </div>
 
-  <script src="/js/auth.js"></script>
-  <script src="/js/admin-login.js"></script>
-
-  <!-- ✅ Show/Hide Password Logic -->
+  <!-- ✅ Working JS -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const passwordInput = document.getElementById('adminPassword');
@@ -43,15 +151,43 @@
 
       if (passwordInput && togglePassword) {
         const icon = togglePassword.querySelector('i');
-
         togglePassword.addEventListener('click', () => {
-          const isPassword = passwordInput.type === 'password';
-          passwordInput.type = isPassword ? 'text' : 'password';
+          const isHidden = passwordInput.type === 'password';
+          passwordInput.type = isHidden ? 'text' : 'password';
           icon.classList.toggle('fa-eye');
           icon.classList.toggle('fa-eye-slash');
-          togglePassword.style.color = isPassword ? '#007bff' : '#00AEEF';
+          togglePassword.style.color = isHidden ? '#007bff' : '#00AEEF';
         });
       }
+
+      const form = document.getElementById('adminLoginForm');
+      const errorMsg = document.getElementById('errorMsg');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorMsg.textContent = '';
+
+        const email = document.getElementById('adminEmail').value.trim();
+        const password = passwordInput.value.trim();
+
+        try {
+          const response = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || 'Invalid credentials');
+
+          // Save token and redirect
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          window.location.href = '/admin-dashboard.html';
+        } catch (err) {
+          errorMsg.textContent = err.message;
+        }
+      });
     });
   </script>
 </body>
