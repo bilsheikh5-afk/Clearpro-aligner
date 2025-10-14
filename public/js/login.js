@@ -1,194 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Login | ClearPro</title>
+// public/js/admin.js
 
-  <!-- Font & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+const API_BASE = 'https://clearpro-fullstack.onrender.com/api';
 
-  <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
+// ========================
+// 🔐 AUTH CLASS
+// ========================
+class Auth {
+  static getToken() {
+    return localStorage.getItem('token');
+  }
 
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #007bff, #00AEEF);
-    }
+  static getUser() {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  }
 
-    .login-container {
-      background: #fff;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      animation: fadeIn 0.6s ease;
-    }
+  static logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/admin-login.html';
+  }
+}
 
-    .logo {
-      width: 120px;
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      margin-bottom: 25px;
-      color: #007bff;
-      font-weight: 700;
-    }
-
-    input[type="email"], input[type="password"] {
-      width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 15px;
-      transition: 0.3s;
-    }
-
-    input:focus {
-      border-color: #007bff;
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(0,123,255,0.2);
-    }
-
-    .password-container {
-      position: relative;
-    }
-
-    .toggle-password {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      color: #999;
-      transition: color 0.3s ease;
-    }
-
-    .toggle-password:hover {
-      color: #007bff;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #0056b3;
-    }
-
-    .forgot-password {
-      display: block;
-      margin-top: 12px;
-      text-decoration: none;
-      color: #007bff;
-      font-size: 14px;
-    }
-
-    .forgot-password:hover {
-      text-decoration: underline;
-    }
-
-    #errorMsg {
-      color: #dc3545;
-      margin-top: 10px;
-      font-size: 14px;
-      min-height: 18px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-</head>
-<body>
-  <div class="login-container">
-    <img src="/assets/logo.png" alt="ClearPro Logo" class="logo">
-    <h2>Admin Login</h2>
-
-    <form id="adminLoginForm">
-      <input type="email" id="adminEmail" placeholder="Email" required>
-
-      <div class="password-container">
-        <input type="password" id="adminPassword" placeholder="Password" required>
-        <span id="toggleAdminPassword" class="toggle-password">
-          <i class="fa-solid fa-eye"></i>
-        </span>
-      </div>
-
-      <button type="submit">Login</button>
-      <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
-
-      <p id="errorMsg"></p>
-    </form>
-  </div>
-
-  <!-- ✅ Working JS -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const passwordInput = document.getElementById('adminPassword');
-      const togglePassword = document.getElementById('toggleAdminPassword');
-
-      if (passwordInput && togglePassword) {
-        const icon = togglePassword.querySelector('i');
-        togglePassword.addEventListener('click', () => {
-          const isHidden = passwordInput.type === 'password';
-          passwordInput.type = isHidden ? 'text' : 'password';
-          icon.classList.toggle('fa-eye');
-          icon.classList.toggle('fa-eye-slash');
-          togglePassword.style.color = isHidden ? '#007bff' : '#00AEEF';
-        });
+// ========================
+// 🌐 API HELPER CLASS
+// ========================
+class API {
+  static async get(endpoint) {
+    const token = Auth.getToken();
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
       }
-
-      const form = document.getElementById('adminLoginForm');
-      const errorMsg = document.getElementById('errorMsg');
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        errorMsg.textContent = '';
-
-        const email = document.getElementById('adminEmail').value.trim();
-        const password = passwordInput.value.trim();
-
-        try {
-          const response = await fetch('/api/admin/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-          });
-
-          const data = await response.json();
-          if (!response.ok) throw new Error(data.error || 'Invalid credentials');
-
-          // Save token and redirect
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.user));
-          window.location.href = '/admin-dashboard.html';
-        } catch (err) {
-          errorMsg.textContent = err.message;
-        }
-      });
     });
-  </script>
-</body>
-</html>
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || 'Failed to fetch data');
+    return data;
+  }
+}
+
+// ========================
+// 📊 DASHBOARD LOGIC
+// ========================
+async function loadDashboard() {
+  const user = Auth.getUser();
+  if (!Auth.getToken() || !user) {
+    window.location.href = '/admin-login.html';
+    return;
+  }
+
+  // Set admin initials
+  const avatar = document.getElementById('admin-avatar');
+  if (avatar && user.name) {
+    avatar.textContent = user.name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase();
+  }
+
+  // Setup logout
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) logoutBtn.addEventListener('click', Auth.logout);
+
+  try {
+    // Fetch data
+    const [doctors, cases] = await Promise.all([
+      API.get('/admin/doctors'),
+      API.get('/admin/cases')
+    ]);
+
+    // Update stats
+    document.getElementById('totalDoctors').textContent = doctors.length;
+    document.getElementById('totalCases').textContent = cases.length;
+    document.getElementById('pendingCases').textContent = cases.filter(c => c.status === 'Pending').length;
+    document.getElementById('approvedCases').textContent = cases.filter(c => c.status === 'Approved').length;
+
+    // Display table
+    displayCases(cases);
+  } catch (error) {
+    console.error('Error loading admin dashboard:', error);
+    const tbody = document.querySelector('#casesTable tbody');
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">${error.message}</td></tr>`;
+  }
+}
+
+// ========================
+// 🧾 DISPLAY CASES TABLE
+// ========================
+function displayCases(cases) {
+  const tbody = document.querySelector('#casesTable tbody');
+  if (!tbody) return;
+
+  if (!cases || cases.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No cases found.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = cases
+    .slice(0, 10)
+    .map(c => `
+      <tr>
+        <td>${c.case_id || '—'}</td>
+        <td>${c.doctor_name || '—'}</td>
+        <td>${c.patient_name || '—'}</td>
+        <td><span class="status ${c.status?.toLowerCase() || 'pending'}">${c.status}</span></td>
+        <td>${new Date(c.createdAt).toLocaleDateString()}</td>
+      </tr>
+    `)
+    .join('');
+}
+
+// ========================
+// 🚀 INIT
+// ========================
+document.addEventListener('DOMContentLoaded', loadDashboard);
