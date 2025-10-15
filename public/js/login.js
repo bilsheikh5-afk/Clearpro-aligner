@@ -49,16 +49,23 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ email, password }),
         });
 
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Invalid credentials');
-
-        // Save token and redirect
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        window.location.href = '/admin-dashboard.html';
-      } catch (err) {
-        errorMsg.textContent = err.message;
-      }
-    });
-  }
+        const response = await fetch('https://clearpro-fullstack.onrender.com/api/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email, password })
 });
+
+const data = await response.json();
+if (!response.ok) throw new Error(data.error || 'Invalid credentials');
+
+// ✅ Verify role is admin
+if (data.user.role !== 'admin') {
+  throw new Error('Access denied. Admins only.');
+}
+
+// ✅ Store login info
+localStorage.setItem('token', data.token);
+localStorage.setItem('user', JSON.stringify(data.user));
+
+// ✅ Redirect to dashboard
+window.location.href = '/admin-dashboard.html';
