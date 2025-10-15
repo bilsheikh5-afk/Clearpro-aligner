@@ -1,3 +1,14 @@
+// Auto-redirect if already logged in
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+  if (token && user.role === 'admin') {
+    // already logged in → skip login page
+    window.location.href = '/admin-dashboard.html';
+  }
+});
+
 // public/js/admin-login.js
 
 document.addEventListener('DOMContentLoaded', () => {
