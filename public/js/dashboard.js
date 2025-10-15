@@ -3,6 +3,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = Auth.getUser();
   document.getElementById('doctorName').textContent = user?.name || 'Doctor';
 
+  document.getElementById('logoutBtn')?.addEventListener('click', () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = '/admin-login.html'; // ✅ redirect to login page
+});
   try {
     const res = await fetch(`${API_BASE}/cases/my-cases`, {
       headers: { Authorization: `Bearer ${Auth.getToken()}` },
